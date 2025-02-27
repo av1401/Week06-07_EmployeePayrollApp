@@ -1,40 +1,31 @@
 package com.bridgelabz.employeepayrollapp.model;
 
-import com.bridgelabz.employeepayrollapp.dto.EmployeePayrollDTO;
+import jakarta.persistence.*;
+import lombok.*;
+import java.time.LocalDate;
+import java.util.List;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "employee_payroll")
 public class EmployeePayrollData {
-    private int id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int employeeId;  //  Ensure it matches service method calls
+
     private String name;
-    private double salary;
-    int employeeId;
+    private long salary;
+    private String gender;
+    private LocalDate startDate;
 
-    public EmployeePayrollData(int id, EmployeePayrollDTO employeePayrollDTO) {
-        this.id = id;
-        this.name = employeePayrollDTO.name;
-        this.salary = employeePayrollDTO.salary;
-    }
+    @ElementCollection
+    private List<String> departments;
 
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public double getSalary() {
-        return salary;
-    }
-
+    // ✅ Manually add the getter (Lombok might not generate correctly)
     public int getEmployeeId() {
         return employeeId;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setSalary(double salary) {
-        this.salary = salary;
     }
 }

@@ -1,21 +1,16 @@
 package com.bridgelabz.employeepayrollapp.dto;
 
-public class EmployeePayrollDTO {
-    public String name;
-    public double salary;
+import lombok.Getter;
+import lombok.Setter;
 
-    public EmployeePayrollDTO(String name, double salary) {
+@Getter
+@Setter
+public class EmployeePayrollDTO {
+    private String name;
+    private long salary;
+
+    public EmployeePayrollDTO(String name, long salary) {
         this.name = name;
         this.salary = salary;
     }
-
-    public String getName() {
-        return name;
-    }
-
-    public double getSalary() {
-        return salary;
-    }
-
-
 }

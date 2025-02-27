@@ -12,22 +12,6 @@ import java.util.List;
 @RequestMapping("/employeepayrollservice")
 public class EmployeePayrollController {
 
-    /*
-    ----------------- Section 2 UC2 Code (Commented Out) -----------------
-
-    @GetMapping("/get")
-    public EmployeePayrollData getEmployeePayrollData() {
-        return employeePayrollService.getEmployeePayrollData();
-    }
-
-    @PostMapping("/create")
-    public EmployeePayrollData createEmployeePayrollData(@RequestBody EmployeePayrollDTO employeePayrollDTO) {
-        return employeePayrollService.createEmployeePayrollData(employeePayrollDTO);
-    }
-
-    -----------------------------------------------------------------
-    */
-
     @Autowired
     private EmployeePayrollService employeePayrollService;
 
