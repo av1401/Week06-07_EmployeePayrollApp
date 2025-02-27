@@ -6,30 +6,15 @@ import com.bridgelabz.employeepayrollapp.service.EmployeePayrollService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/employeepayrollservice")
 public class EmployeePayrollController {
 
     /*
-    ----------------- Section 2 UC1 Code  -----------------
+    ----------------- Section 2 UC2 Code (Commented Out) -----------------
 
-    @GetMapping("/get")
-    public EmployeePayrollData getEmployeePayrollData() {
-        return new EmployeePayrollData(1, new EmployeePayrollDTO("John Doe", 50000));
-    }
-
-    @PostMapping("/create")
-    public EmployeePayrollData createEmployeePayrollData(@RequestBody EmployeePayrollDTO employeePayrollDTO) {
-        return new EmployeePayrollData(2, employeePayrollDTO);
-    }
-
-    -----------------------------------------------------------------
-    */
-
-    @Autowired
-    private EmployeePayrollService employeePayrollService;
-
-    // Section 2 UC2: Introducing Service Layer
     @GetMapping("/get")
     public EmployeePayrollData getEmployeePayrollData() {
         return employeePayrollService.getEmployeePayrollData();
@@ -38,5 +23,36 @@ public class EmployeePayrollController {
     @PostMapping("/create")
     public EmployeePayrollData createEmployeePayrollData(@RequestBody EmployeePayrollDTO employeePayrollDTO) {
         return employeePayrollService.createEmployeePayrollData(employeePayrollDTO);
+    }
+
+    -----------------------------------------------------------------
+    */
+
+    @Autowired
+    private EmployeePayrollService employeePayrollService;
+
+    @GetMapping("/get")
+    public List<EmployeePayrollData> getAllEmployees() {
+        return employeePayrollService.getAllEmployees();
+    }
+
+    @GetMapping("/get/{empId}")
+    public EmployeePayrollData getEmployeeById(@PathVariable int empId) {
+        return employeePayrollService.getEmployeeById(empId);
+    }
+
+    @PostMapping("/create")
+    public EmployeePayrollData createEmployeePayrollData(@RequestBody EmployeePayrollDTO employeePayrollDTO) {
+        return employeePayrollService.createEmployeePayrollData(employeePayrollDTO);
+    }
+
+    @PutMapping("/update/{empId}")
+    public EmployeePayrollData updateEmployeePayrollData(@PathVariable int empId, @RequestBody EmployeePayrollDTO employeePayrollDTO) {
+        return employeePayrollService.updateEmployeePayrollData(empId, employeePayrollDTO);
+    }
+
+    @DeleteMapping("/delete/{empId}")
+    public void deleteEmployeePayrollData(@PathVariable int empId) {
+        employeePayrollService.deleteEmployeePayrollData(empId);
     }
 }
