@@ -20,8 +20,9 @@ public class EmployeePayrollService {
         return employeeList.stream()
                 .filter(emp -> emp.getEmployeeId() == empId)
                 .findFirst()
-                .orElseThrow(() -> new EmployeeNotFoundException("Employee with ID " + empId + " not found"));
+                .orElseThrow(() -> new EmployeeNotFoundException("Employee with ID " + empId + " not found!"));
     }
+
 
     public EmployeePayrollData createEmployeePayrollData(EmployeePayrollDTO employeePayrollDTO) {
         EmployeePayrollData newEmployee = new EmployeePayrollData(employeeList.size() + 1, employeePayrollDTO.getName(), employeePayrollDTO.getSalary(), "Male", LocalDate.now(), new ArrayList<>());
