@@ -1,6 +1,7 @@
 package com.bridgelabz.employeepayrollapp.service;
 
 import com.bridgelabz.employeepayrollapp.dto.EmployeePayrollDTO;
+import com.bridgelabz.employeepayrollapp.exception.EmployeePayrollException;
 import com.bridgelabz.employeepayrollapp.model.EmployeePayrollData;
 import com.bridgelabz.employeepayrollapp.repository.EmployeePayrollRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,7 @@ import java.util.List;
 public class EmployeePayrollService {
 
     @Autowired
-    private EmployeePayrollRepository employeePayrollRepository; //  Inject Repository
+    private EmployeePayrollRepository employeePayrollRepository;
 
     public List<EmployeePayrollData> getAllEmployees() {
         return employeePayrollRepository.findAll();
@@ -21,29 +22,32 @@ public class EmployeePayrollService {
 
     public EmployeePayrollData getEmployeeById(int empId) {
         return employeePayrollRepository.findById(empId)
-                .orElseThrow(() -> new RuntimeException("Employee Not Found!"));
+                .orElseThrow(() -> new EmployeePayrollException("Employee with ID " + empId + " not found!"));
     }
 
     public EmployeePayrollData createEmployeePayrollData(EmployeePayrollDTO employeePayrollDTO) {
         EmployeePayrollData newEmployee = new EmployeePayrollData(
-                0, // Auto-generated ID
+                0,
                 employeePayrollDTO.getName(),
                 employeePayrollDTO.getSalary(),
                 "Male",
                 LocalDate.now(),
                 null
         );
-        return employeePayrollRepository.save(newEmployee); // Save to database
+        return employeePayrollRepository.save(newEmployee);
     }
 
     public EmployeePayrollData updateEmployeePayrollData(int empId, EmployeePayrollDTO employeePayrollDTO) {
         EmployeePayrollData emp = getEmployeeById(empId);
         emp.setName(employeePayrollDTO.getName());
         emp.setSalary(employeePayrollDTO.getSalary());
-        return employeePayrollRepository.save(emp); //  Save updates to database
+        return employeePayrollRepository.save(emp);
     }
 
     public void deleteEmployeePayrollData(int empId) {
-        employeePayrollRepository.deleteById(empId); //  Delete from database
+        if (!employeePayrollRepository.existsById(empId)) {
+            throw new EmployeePayrollException("Cannot delete! Employee with ID " + empId + " does not exist.");
+        }
+        employeePayrollRepository.deleteById(empId);
     }
 }
