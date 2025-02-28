@@ -1,5 +1,6 @@
 package com.bridgelabz.employeepayrollapp.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
@@ -14,18 +15,20 @@ public class EmployeePayrollData {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int employeeId;  //  Ensure it matches service method calls
+    private int employeeId;
 
     private String name;
     private long salary;
     private String gender;
+
+    @JsonFormat(pattern="dd MMM yyyy")
     private LocalDate startDate;
 
-    @ElementCollection
-    private List<String> departments;
+    private String note;
+    private String profilePic;
 
-    // ✅ Manually add the getter (Lombok might not generate correctly)
-    public int getEmployeeId() {
-        return employeeId;
-    }
+    @ElementCollection
+    @CollectionTable(name = "employee_department", joinColumns = @JoinColumn(name = "employee_id"))
+    @Column(name = "department")
+    private List<String> departments;
 }
