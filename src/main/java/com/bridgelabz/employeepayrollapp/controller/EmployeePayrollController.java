@@ -3,46 +3,50 @@ package com.bridgelabz.employeepayrollapp.controller;
 import com.bridgelabz.employeepayrollapp.dto.EmployeePayrollDTO;
 import com.bridgelabz.employeepayrollapp.model.EmployeePayrollData;
 import com.bridgelabz.employeepayrollapp.service.EmployeePayrollService;
-import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/employeepayrollservice")
+@RequestMapping("/employee")
 public class EmployeePayrollController {
+
+    private static final Logger logger = LoggerFactory.getLogger(EmployeePayrollController.class);
 
     @Autowired
     private EmployeePayrollService employeePayrollService;
 
-    @GetMapping("/get")
-    public ResponseEntity<List<EmployeePayrollData>> getAllEmployees() {
-        return ResponseEntity.ok(employeePayrollService.getAllEmployees());
+    @GetMapping("/all")
+    public List<EmployeePayrollData> getAllEmployees() {
+        logger.info("Received GET request to fetch all employees");
+        return employeePayrollService.getAllEmployees();
     }
 
-    @GetMapping("/get/{empId}")
-    public ResponseEntity<EmployeePayrollData> getEmployeeById(@PathVariable int empId) {
-        EmployeePayrollData employee = employeePayrollService.getEmployeeById(empId);
-        return ResponseEntity.ok(employee);
+    @GetMapping("/{empId}")
+    public EmployeePayrollData getEmployeeById(@PathVariable int empId) {
+        logger.info("Received GET request for employee ID: {}", empId);
+        return employeePayrollService.getEmployeeById(empId);
     }
 
     @PostMapping("/create")
-    public ResponseEntity<EmployeePayrollData> createEmployeePayrollData(@Valid @RequestBody EmployeePayrollDTO employeePayrollDTO) {
-        EmployeePayrollData newEmployee = employeePayrollService.createEmployeePayrollData(employeePayrollDTO);
-        return ResponseEntity.ok(newEmployee);
+    public EmployeePayrollData createEmployee(@RequestBody EmployeePayrollDTO employeePayrollDTO) {
+        logger.info("Received POST request to create employee: {}", employeePayrollDTO.getName());
+        return employeePayrollService.createEmployeePayrollData(employeePayrollDTO);
     }
 
     @PutMapping("/update/{empId}")
-    public ResponseEntity<EmployeePayrollData> updateEmployeePayrollData(@PathVariable int empId, @Valid @RequestBody EmployeePayrollDTO employeePayrollDTO) {
-        EmployeePayrollData updatedEmployee = employeePayrollService.updateEmployeePayrollData(empId, employeePayrollDTO);
-        return ResponseEntity.ok(updatedEmployee);
+    public EmployeePayrollData updateEmployee(@PathVariable int empId, @RequestBody EmployeePayrollDTO employeePayrollDTO) {
+        logger.info("Received PUT request to update employee ID: {}", empId);
+        return employeePayrollService.updateEmployeePayrollData(empId, employeePayrollDTO);
     }
 
     @DeleteMapping("/delete/{empId}")
-    public ResponseEntity<String> deleteEmployeePayrollData(@PathVariable int empId) {
+    public String deleteEmployee(@PathVariable int empId) {
+        logger.warn("Received DELETE request for employee ID: {}", empId);
         employeePayrollService.deleteEmployeePayrollData(empId);
-        return ResponseEntity.ok("Employee with ID " + empId + " deleted successfully");
+        return "Employee with ID " + empId + " deleted successfully!";
     }
 }

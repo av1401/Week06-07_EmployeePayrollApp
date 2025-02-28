@@ -4,65 +4,59 @@ import com.bridgelabz.employeepayrollapp.dto.EmployeePayrollDTO;
 import com.bridgelabz.employeepayrollapp.exception.EmployeeNotFoundException;
 import com.bridgelabz.employeepayrollapp.model.EmployeePayrollData;
 import com.bridgelabz.employeepayrollapp.repository.IEmployeePayrollRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+
 import java.util.List;
 
 @Service
 public class EmployeePayrollService {
 
+    private static final Logger logger = LoggerFactory.getLogger(EmployeePayrollService.class);
+
     @Autowired
-    private IEmployeePayrollRepository employeeRepository; // Use JPA Repository
+    private IEmployeePayrollRepository employeeRepository;
 
-    //  Get All Employees
     public List<EmployeePayrollData> getAllEmployees() {
-        return employeeRepository.findAll(); // Fetch from DB
+        logger.info("Fetching all employees");
+        return employeeRepository.findAll();
     }
 
-    //  Get Employee by ID
     public EmployeePayrollData getEmployeeById(int empId) {
+        logger.info("Fetching employee with ID: {}", empId);
         return employeeRepository.findById(empId)
-                .orElseThrow(() -> new EmployeeNotFoundException("Employee with ID " + empId + " not found!"));
+                .orElseThrow(() -> {
+                    logger.error("Employee with ID {} not found!", empId);
+                    return new EmployeeNotFoundException("Employee with ID " + empId + " not found!");
+                });
     }
 
-    //  Create Employee
     public EmployeePayrollData createEmployeePayrollData(EmployeePayrollDTO employeePayrollDTO) {
+        logger.info("Creating a new employee: {}", employeePayrollDTO.getName());
         EmployeePayrollData newEmployee = new EmployeePayrollData(
-                0, // ID is auto-generated
+                0,
                 employeePayrollDTO.getName(),
-                employeePayrollDTO.getSalary(),
-                employeePayrollDTO.getGender(),
-                LocalDate.parse(employeePayrollDTO.getStartDate(), DateTimeFormatter.ofPattern("dd MMM yyyy")),
-                employeePayrollDTO.getNote(),
-                employeePayrollDTO.getProfilePic(),
-                employeePayrollDTO.getDepartment()
+                employeePayrollDTO.getSalary()
         );
-
-        return employeeRepository.save(newEmployee); // Save to DB
+        return employeeRepository.save(newEmployee);
     }
 
-    // Update Employee
     public EmployeePayrollData updateEmployeePayrollData(int empId, EmployeePayrollDTO employeePayrollDTO) {
+        logger.info("Updating employee with ID: {}", empId);
         EmployeePayrollData existingEmployee = getEmployeeById(empId);
-
         existingEmployee.setName(employeePayrollDTO.getName());
         existingEmployee.setSalary(employeePayrollDTO.getSalary());
         existingEmployee.setGender(employeePayrollDTO.getGender());
-        existingEmployee.setStartDate(LocalDate.parse(employeePayrollDTO.getStartDate(), DateTimeFormatter.ofPattern("dd MMM yyyy")));
-        existingEmployee.setNote(employeePayrollDTO.getNote());
-        existingEmployee.setProfilePic(employeePayrollDTO.getProfilePic());
-        existingEmployee.setDepartments(employeePayrollDTO.getDepartment());
-
-        return employeeRepository.save(existingEmployee); // Save updated data
+        existingEmployee.setStartDate(employeePayrollDTO.getStartDate());
+        existingEmployee.setDepartments(employeePayrollDTO.getDepartments());
+        return employeeRepository.save(existingEmployee);
     }
 
-    // Delete Employee
     public void deleteEmployeePayrollData(int empId) {
-        if (!employeeRepository.existsById(empId)) {
-            throw new EmployeeNotFoundException("Employee with ID " + empId + " not found!");
-        }
-        employeeRepository.deleteById(empId); // Delete from DB
+        logger.warn("Deleting employee with ID: {}", empId);
+        EmployeePayrollData employee = getEmployeeById(empId);
+        employeeRepository.delete(employee);
     }
 }
